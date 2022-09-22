@@ -19,9 +19,8 @@ const options = {
 };
 
 const app = express();
-console.log('работает');
 
-mongoose.connect('mongodb://127.0.0.1:27017/moviedb');
+mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb');
 
 /* Разрешаем кросс-доменные запросы CORS */
 app.use('*', cors(options));
