@@ -4,7 +4,7 @@ const {
   createUser,
   login,
   getUser,
-  updateUser
+  updateUser,
 } = require('../controllers/users');
 
 /* Регистрация */
