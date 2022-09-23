@@ -20,6 +20,7 @@ const options = {
 
 const app = express();
 const error = require('./middlewares/error');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb');
 
@@ -28,11 +29,13 @@ app.use('*', cors(options));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-
+/* Логгер запросов winston */
+app.use(requestLogger);
 app.get('/signout', (req, res) => {
   res.clearCookie('jwt').send({ message: 'Выход' });
 });
-
+/* Логгер ошибок winston */
+app.use(errorLogger);
 /* Обработчик валидации от celebrate */
 app.use(errors());
 /* Кастомый обработчик ошибок */
