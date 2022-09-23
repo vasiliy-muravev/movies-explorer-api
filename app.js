@@ -9,7 +9,7 @@ const { PORT } = process.env;
 
 const options = {
   origin: [
-    'http://localhost:3010',
+    'http://localhost:3011',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
@@ -19,6 +19,8 @@ const options = {
 };
 
 const app = express();
+const usersRoutes = require('./routes/users');
+const createUser = require('./routes/users');
 const error = require('./middlewares/error');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -31,6 +33,8 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 /* Логгер запросов winston */
 app.use(requestLogger);
+app.post('/signup', createUser);
+app.use('/users', usersRoutes);
 app.get('/signout', (req, res) => {
   res.clearCookie('jwt').send({ message: 'Выход' });
 });
