@@ -20,6 +20,7 @@ const options = {
 
 const app = express();
 const usersRoutes = require('./routes/users');
+const moviesRoutes = require('./routes/movies');
 const createUser = require('./routes/users');
 const login = require('./routes/users');
 const auth = require('./middlewares/auth');
@@ -39,6 +40,7 @@ app.post('/signup', createUser);
 app.post('/signin', login);
 app.use(auth);
 app.use('/users', usersRoutes);
+app.use('/movies', moviesRoutes);
 app.get('/signout', (req, res) => {
   res.clearCookie('jwt').send({ message: 'Выход' });
 });
