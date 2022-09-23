@@ -78,3 +78,17 @@ module.exports.getUser = (req, res, next) => {
       }
     });
 };
+
+module.exports.updateUser = (req, res, next) => {
+  const { name, email } = req.body;
+  User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
+    .orFail(() => new NotFoundError('Пользователь с указанным id не существует'))
+    .then((user) => res.send(user))
+    .catch((error) => {
+      if (error.name === 'ValidationError') {
+        next(new BadRequestError(`Переданы некорректные данные для изменения данных пользователя ${error.message}`));
+      } else {
+        next(error);
+      }
+    });
+};

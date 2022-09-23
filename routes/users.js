@@ -3,7 +3,8 @@ const { celebrate, Joi } = require('celebrate');
 const {
   createUser,
   login,
-  getUser
+  getUser,
+  updateUser
 } = require('../controllers/users');
 
 /* Регистрация */
@@ -27,3 +28,11 @@ usersRoutes.post('/signin', celebrate({
 
 /* Получение информации о пользователе */
 usersRoutes.get('/me', getUser);
+
+/* Обновлние информации о пользователе */
+usersRoutes.patch('/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    email: Joi.string().required().email(),
+  }),
+}), updateUser);
