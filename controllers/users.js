@@ -31,3 +31,35 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch(next);
 };
+
+module.exports.login = (req, res, next) => {
+  const { email, password } = req.body;
+
+  User.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        return next(new UnauthorizedError('Неверная почта или пароль'));
+      }
+
+      return bcrypt.compare(password, user.password)
+        .then((isValidPassword) => {
+          if (!isValidPassword) {
+            return next(new UnauthorizedError('Неверная почта или пароль'));
+          }
+
+          const token = jwt.sign(
+            { _id: user.id },
+            NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+            { expiresIn: '7d' },
+          );
+
+          return res.cookie('jwt', token, {
+            maxAge: 3600000 * 24 * 7,
+            httpOnly: true,
+            sameSite: true,
+          })
+            .send({ token, user });
+        })
+        .catch(next);
+    });
+};
