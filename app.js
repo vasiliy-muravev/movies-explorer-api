@@ -32,5 +32,4 @@ app.get('/signout', (req, res) => {
   res.clearCookie('jwt').send({ message: 'Выход' });
 });
 
-
 app.listen(PORT);
