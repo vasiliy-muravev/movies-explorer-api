@@ -2,7 +2,8 @@ const usersRoutes = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const {
   createUser,
-  login
+  login,
+  getUser
 } = require('../controllers/users');
 
 /* Регистрация */
@@ -23,3 +24,6 @@ usersRoutes.post('/signin', celebrate({
     password: Joi.string().required(),
   }),
 }), login);
+
+/* Получение информации о пользователе */
+usersRoutes.get('/me', getUser);

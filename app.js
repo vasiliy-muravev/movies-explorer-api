@@ -22,6 +22,7 @@ const app = express();
 const usersRoutes = require('./routes/users');
 const createUser = require('./routes/users');
 const login = require('./routes/users');
+const auth = require('./middlewares/auth');
 const error = require('./middlewares/error');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -36,6 +37,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
 app.post('/signup', createUser);
 app.post('/signin', login);
+app.use(auth);
 app.use('/users', usersRoutes);
 app.get('/signout', (req, res) => {
   res.clearCookie('jwt').send({ message: 'Выход' });

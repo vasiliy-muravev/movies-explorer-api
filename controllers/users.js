@@ -63,3 +63,18 @@ module.exports.login = (req, res, next) => {
         .catch(next);
     });
 };
+
+module.exports.getUser = (req, res, next) => {
+  console.log(req.user);
+  const userId = req.user._id;
+  User.findById(userId)
+    .orFail(() => new NotFoundError('Пользователь с указанным id не существует'))
+    .then((user) => res.send(user))
+    .catch((error) => {
+      if (error.name === 'CastError') {
+        next(new BadRequestError('Получение пользователя с некорректным id'));
+      } else {
+        next(error);
+      }
+    });
+};
