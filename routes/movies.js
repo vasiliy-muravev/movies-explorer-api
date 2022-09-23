@@ -23,4 +23,11 @@ moviesRoutes.post('/', celebrate({
   }),
 }), createMovie);
 
+/* Удаляет карточку по идентификатору */
+moviesRoutes.delete('/:movieId', celebrate({
+  params: Joi.object().keys({
+    movieId: Joi.string().hex().length(24),
+  }),
+}), deleteMovie);
+
 module.exports = moviesRoutes;

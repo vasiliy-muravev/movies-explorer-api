@@ -34,9 +34,32 @@ module.exports.createMovie = (req, res, next) => {
     .then((card) => res.status(201).send(card))
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        next(new BadRequestError(`Переданы некорректные данные для создания карточки ${error.message}`));
+        next(new BadRequestError(`Переданы некорректные данные для создания фильма ${error.message}`));
       } else {
         next(error);
       }
     });
+};
+
+module.exports.deleteMovie = (req, res, next) => {
+  const { movieId } = req.params;
+
+  Movie.findById(movieId)
+    .orFail(() => new NotFoundError('Фильм с указанным id не существует'))
+    .then((movie) => {
+      if (movie && req.user._id !== movie.owner.toString()) {
+        next(new ForbiddenError('Нельзя удалить фильм другого пользователя'));
+      } else {
+        Movie.findByIdAndDelete(movieId)
+          .then((deletedMovie) => res.send(deletedMovie))
+          .catch((error) => {
+            if (error.name === 'CastError') {
+              next(new BadRequestError('Удаление фильма с некорректным id'));
+            } else {
+              next(error);
+            }
+          });
+      }
+    })
+    .catch(next);
 };
