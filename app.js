@@ -19,6 +19,7 @@ const options = {
 };
 
 const app = express();
+const error = require('./middlewares/error');
 
 mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb');
 
@@ -31,5 +32,10 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/signout', (req, res) => {
   res.clearCookie('jwt').send({ message: 'Выход' });
 });
+
+/* Обработчик валидации от celebrate */
+app.use(errors());
+/* Кастомый обработчик ошибок */
+app.use(error);
 
 app.listen(PORT);
