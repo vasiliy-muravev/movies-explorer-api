@@ -1,54 +1,15 @@
-const express = require('express');
 const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
-const { errors } = require('celebrate');
-const cors = require('cors');
+const app = require('./routes/index');
+const { DB_ADDRESS_CONST } = require('./constants/config');
 require('dotenv').config();
 
-const { PORT } = process.env;
+const {
+  NODE_ENV,
+  PORT,
+  DB_NAME,
+  DB_ADDRESS,
+} = process.env;
 
-const options = {
-  origin: [
-    'http://localhost:3011',
-  ],
-  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
-  credentials: true,
-};
+mongoose.connect(NODE_ENV === 'production' ? DB_ADDRESS + DB_NAME : `${DB_ADDRESS_CONST}moviesdb`);
 
-const app = express();
-const usersRoutes = require('./routes/users');
-const moviesRoutes = require('./routes/movies');
-const createUser = require('./routes/users');
-const login = require('./routes/users');
-const auth = require('./middlewares/auth');
-const error = require('./middlewares/error');
-const { requestLogger, errorLogger } = require('./middlewares/logger');
-
-mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb');
-
-/* Разрешаем кросс-доменные запросы CORS */
-app.use('*', cors(options));
-app.use(express.json());
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
-/* Логгер запросов winston */
-app.use(requestLogger);
-app.post('/signup', createUser);
-app.post('/signin', login);
-app.use(auth);
-app.use('/users', usersRoutes);
-app.use('/movies', moviesRoutes);
-app.get('/signout', (req, res) => {
-  res.clearCookie('jwt').send({ message: 'Выход' });
-});
-/* Логгер ошибок winston */
-app.use(errorLogger);
-/* Обработчик валидации от celebrate */
-app.use(errors());
-/* Кастомый обработчик ошибок */
-app.use(error);
-
-app.listen(PORT);
+app.listen(NODE_ENV === 'production' ? PORT : 3001);

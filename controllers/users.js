@@ -5,6 +5,7 @@ const BadRequestError = require('../errors/bad-request-err');
 const NotFoundError = require('../errors/not-found-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
 const ConflictError = require('../errors/conflict-err');
+const { JWT_SECRET_CONST } = require('../constants/config');
 require('dotenv').config();
 
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -50,7 +51,7 @@ module.exports.login = (req, res, next) => {
 
           const token = jwt.sign(
             { _id: user.id },
-            NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+            NODE_ENV === 'production' ? JWT_SECRET : JWT_SECRET_CONST,
             { expiresIn: '7d' },
           );
 
@@ -70,13 +71,7 @@ module.exports.getUser = (req, res, next) => {
   User.findById(userId)
     .orFail(() => new NotFoundError('Пользователь с указанным id не существует'))
     .then((user) => res.send(user))
-    .catch((error) => {
-      if (error.name === 'CastError') {
-        next(new BadRequestError('Получение пользователя с некорректным id'));
-      } else {
-        next(error);
-      }
-    });
+    .catch(next);
 };
 
 module.exports.updateUser = (req, res, next) => {
@@ -87,6 +82,8 @@ module.exports.updateUser = (req, res, next) => {
     .catch((error) => {
       if (error.name === 'ValidationError') {
         next(new BadRequestError(`Переданы некорректные данные для изменения данных пользователя ${error.message}`));
+      } else if (error.name === 'MongoServerError' && error.code === 11000) {
+        next(new ConflictError('Нельзя редактировать данные другого пользователя'));
       } else {
         next(error);
       }

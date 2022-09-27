@@ -52,14 +52,20 @@ module.exports.deleteMovie = (req, res, next) => {
       } else {
         Movie.findByIdAndDelete(movieId)
           .then((deletedMovie) => res.send(deletedMovie))
-          .catch((error) => {
-            if (error.name === 'CastError') {
-              next(new BadRequestError('Удаление фильма с некорректным id'));
-            } else {
-              next(error);
-            }
-          });
+          .catch(next);
       }
     })
-    .catch(next);
+    .catch((error) => {
+      if (error.name === 'CastError') {
+        next(new BadRequestError('Удаление фильма с некорректным id'));
+      } else {
+        next(error);
+      }
+    });
+};
+
+module.exports.getMovies = (req, res, next) => {
+  Movie.find({})
+    .then((movies) => res.send(movies))
+    .catch((error) => next(error));
 };

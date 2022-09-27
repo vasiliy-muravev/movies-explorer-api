@@ -1,33 +1,18 @@
 const moviesRoutes = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
+const { createMovieValidator, deleteMovieValidator } = require('../validators/movies');
 const {
   createMovie,
   deleteMovie,
+  getMovies,
 } = require('../controllers/movies');
 
 /* Создаёт карточку */
-moviesRoutes.post('/', celebrate({
-  body: Joi.object().keys({
-    country: Joi.string().required(),
-    director: Joi.string().required(),
-    duration: Joi.number().required(),
-    year: Joi.string().required(),
-    description: Joi.string().required(),
-    image: Joi.string().required().pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/),
-    trailerLink: Joi.string().required().pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/),
-    thumbnail: Joi.string().required().pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/),
-    owner: Joi.string().required(),
-    movieId: Joi.string().required(),
-    nameRU: Joi.string().required(),
-    nameEN: Joi.string().required(),
-  }),
-}), createMovie);
+moviesRoutes.post('/movies/', createMovieValidator, createMovie);
 
 /* Удаляет карточку по идентификатору */
-moviesRoutes.delete('/:movieId', celebrate({
-  params: Joi.object().keys({
-    movieId: Joi.string().hex().length(24),
-  }),
-}), deleteMovie);
+moviesRoutes.delete('/movies/:movieId', deleteMovieValidator, deleteMovie);
+
+/* Получить сохраненные фильмы */
+moviesRoutes.get('/movies', getMovies);
 
 module.exports = moviesRoutes;

@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: [2, 'Must be at least 2, got {VALUE}'],
     maxlength: [30, 'Must be not more then 30, got {VALUE}'],
+    required: [true, 'Поле "name" должно быть заполнено'],
   },
   password: {
     type: String,
