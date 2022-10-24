@@ -14,12 +14,7 @@ module.exports.createMovieValidator = celebrate({
       }
       return helpers.message('Поле image не является ссылкой');
     }),
-    trailerLink: Joi.string().required().custom((value, helpers) => {
-      if (validator.isURL(value)) {
-        return value;
-      }
-      return helpers.message('Поле trailerLink не является ссылкой');
-    }),
+    trailerLink: Joi.string().required(),
     thumbnail: Joi.string().required().custom((value, helpers) => {
       if (validator.isURL(value)) {
         return value;
