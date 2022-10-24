@@ -60,7 +60,7 @@ module.exports.login = (req, res, next) => {
             httpOnly: true,
             sameSite: true,
           })
-            .send({ token, user });
+            .send({ token, user: user.deletePasswordFromUser() });
         })
         .catch(next);
     });
