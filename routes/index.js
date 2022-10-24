@@ -16,7 +16,11 @@ const NotFoundError = require('../errors/not-found-err');
 
 const options = {
   origin: [
-    'http://localhost:3011',
+    'http://localhost:3000',
+    'http://vasiliymuravev.nomorepartiesxyz.ru',
+    'https://vasiliymuravev.nomorepartiesxyz.ru',
+    'http://vasiliy-muravev.github.io/movies-explorer-frontend',
+    'https://vasiliy-muravev.github.io/movies-explorer-frontend',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
