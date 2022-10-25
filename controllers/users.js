@@ -70,7 +70,20 @@ module.exports.getUser = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
     .orFail(() => new NotFoundError('Пользователь с указанным id не существует'))
-    .then((user) => res.send(user))
+    .then((user) => {
+
+      const token = jwt.sign(
+        { _id: user.id },
+        NODE_ENV === 'production' ? JWT_SECRET : JWT_SECRET_CONST,
+        { expiresIn: '7d' },
+      );
+
+      res.cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+        sameSite: true,
+      }).send({ token, user: user.deletePasswordFromUser() })
+    })
     .catch(next);
 };
 
