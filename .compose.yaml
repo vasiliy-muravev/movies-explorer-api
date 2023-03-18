@@ -1,0 +1,30 @@
+
+services:
+  mongo:
+    restart: always
+    image: mongo:4.4.0
+    volumes:
+      - ./data:/data/db
+    expose:
+      - 27017
+  movies-explorer-api:
+    restart: on-failure
+    build: ./backend
+    hostname: movies-explorer-api
+    ports:
+      - '83:5000'
+#  web2:
+#    restart: on-failure
+#    build: ./web
+#    hostname: web2
+#    ports:
+#      - '82:5000'
+  nginx:
+    build: ./nginx
+    ports:
+    - '84:84'
+    depends_on:
+    - movies-explorer-api
+#    - web2
+
+

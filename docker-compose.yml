@@ -1,0 +1,24 @@
+version: '3.9'
+services:
+  movies-explorer-api:
+    container_name: movies-explorer-api
+    restart: unless-stopped
+    build:
+      context: ./backend
+      target: dev-envs
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - movies-explorer-mongo
+
+  movies-explorer-mongo:
+    image: mongo:4.4.0
+    container_name: movies-explorer-mongo
+    restart: unless-stopped
+    volumes:
+      - ./data:/data/db
+    expose:
+      - 27017
+networks:
+  default:
+    name: nginx-proxy

@@ -21,6 +21,7 @@ const options = {
     'https://vasiliymuravev.nomorepartiesxyz.ru',
     'http://vasiliy-muravev.github.io/movies-explorer-frontend',
     'https://vasiliy-muravev.github.io/movies-explorer-frontend',
+    'http://localhost:3021',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
