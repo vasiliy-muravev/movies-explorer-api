@@ -12,4 +12,4 @@ const {
 
 mongoose.connect(NODE_ENV === 'production' ? DB_ADDRESS + DB_NAME : `${DB_ADDRESS_CONST}moviesdb`);
 
-app.listen(NODE_ENV === 'production' ? PORT : 80);
+app.listen(NODE_ENV === 'production' ? PORT : 8080);
